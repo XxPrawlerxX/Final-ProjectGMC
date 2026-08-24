@@ -166,11 +166,8 @@ const categories = {
     "Limited-time value",
     "Popular finds at attractive prices.",
   ],
-  "AliExpress Business": [
-    "home",
-    "Stock up with confidence",
-    "Practical business supplies.",
-  ],
+  
+  
 };
 
 const productNames = {
