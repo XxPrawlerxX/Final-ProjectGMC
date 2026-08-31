@@ -434,7 +434,13 @@ const products = [
       "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=1600&q=90",
   },
 ];
-export default function Home({ onSignIn, onCategorySelect }) {
+export default function Home({
+  onSignIn,
+  onCategorySelect,
+  onCart,
+  cart,
+  addToCart,
+}) {
   const [activeProduct, setActiveProduct] = useState(0);
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
@@ -586,11 +592,12 @@ export default function Home({ onSignIn, onCategorySelect }) {
                 </div>
               )}
             </div>
-
-            <button onClick={() => showNotice("Your cart is empty")}>
+            <button
+              onClick={onCart}
+            >
               <ShoppingCart size={18} />
               Cart
-              <b>0</b>
+              <b>{cart.reduce((total, item) => total + item.quantity, 0)}</b>
             </button>
           </div>
         </div>
@@ -685,8 +692,6 @@ export default function Home({ onSignIn, onCategorySelect }) {
       )}
 
       <main>
-      
-
         {/* ================================
             PRODUCT HERO
         ================================= */}
@@ -703,9 +708,12 @@ export default function Home({ onSignIn, onCategorySelect }) {
 
             <button
               className="hero-button"
-              onClick={() => showNotice(`${product.name} selected`)}
+              onClick={() => {
+                addToCart(product);
+                showNotice(`${product.name} added to cart`);
+              }}
             >
-              Shop now
+              Add to cart
               <ChevronRight size={18} />
             </button>
 
@@ -765,8 +773,17 @@ export default function Home({ onSignIn, onCategorySelect }) {
                   <article className="shelf-card" key={name}>
                     <button
                       className="shelf-card-image"
-                      onClick={() => showNotice(`${name} selected`)}
-                      aria-label={`View ${name}`}
+                      onClick={() => {
+                        addToCart({
+                          name,
+                          price,
+                          oldPrice,
+                          image,
+                        });
+
+                        showNotice(`${name} added to cart`);
+                      }}
+                      aria-label={`Add ${name} to cart`}
                     >
                       <img src={image} alt={name} loading="lazy" />
 
@@ -774,8 +791,18 @@ export default function Home({ onSignIn, onCategorySelect }) {
                     </button>
 
                     <button
-                      className="shelf-card-name"
-                      onClick={() => showNotice(`${name} selected`)}
+                      className="shelf-card-image"
+                      onClick={() => {
+                        addToCart({
+                          name,
+                          price,
+                          oldPrice,
+                          image,
+                        });
+
+                        showNotice(`${name} added to cart`);
+                      }}
+                      aria-label={`Add ${name} to cart`}
                     >
                       {name}
                     </button>
@@ -817,8 +844,17 @@ export default function Home({ onSignIn, onCategorySelect }) {
               <article className="dense-product-card" key={name}>
                 <button
                   className="dense-product-image"
-                  onClick={() => showNotice(`${name} selected`)}
-                  aria-label={`View ${name}`}
+                  onClick={() => {
+                    addToCart({
+                      name,
+                      price,
+                      oldPrice,
+                      image,
+                    });
+
+                    showNotice(`${name} added to cart`);
+                  }}
+                  aria-label={`Add ${name} to cart`}
                 >
                   <img src={image} alt={name} loading="lazy" />
 
@@ -827,7 +863,16 @@ export default function Home({ onSignIn, onCategorySelect }) {
 
                 <button
                   className="dense-product-name"
-                  onClick={() => showNotice(`${name} selected`)}
+                  onClick={() => {
+                    addToCart({
+                      name,
+                      price,
+                      oldPrice,
+                      image,
+                    });
+
+                    showNotice(`${name} added to cart`);
+                  }}
                 >
                   {name}
                 </button>
@@ -868,7 +913,16 @@ export default function Home({ onSignIn, onCategorySelect }) {
               <article className="dense-product-card" key={name}>
                 <button
                   className="dense-product-image"
-                  onClick={() => showNotice(`${name} selected`)}
+                  onClick={() => {
+                    addToCart({
+                      name,
+                      price,
+                      oldPrice,
+                      image,
+                    });
+
+                    showNotice(`${name} added to cart`);
+                  }}
                   aria-label={`View ${name}`}
                 >
                   <img src={image} alt={name} loading="lazy" />
@@ -878,7 +932,16 @@ export default function Home({ onSignIn, onCategorySelect }) {
 
                 <button
                   className="dense-product-name"
-                  onClick={() => showNotice(`${name} selected`)}
+                  onClick={() => {
+                    addToCart({
+                      name,
+                      price,
+                      oldPrice,
+                      image,
+                    });
+
+                    showNotice(`${name} added to cart`);
+                  }}
                 >
                   {name}
                 </button>
