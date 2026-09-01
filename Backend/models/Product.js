@@ -36,6 +36,16 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
 
+    // Every product belongs to exactly one vendor. This is ALWAYS set by
+    // the backend from the logged-in user's Vendor profile — never from
+    // a value sent by the frontend. See createProduct in
+    // controllers/productController.js.
+    vendor: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Vendor",
+      required: true,
+    },
+
     stock: {
       type: Number,
       required: true,
