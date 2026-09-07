@@ -61,6 +61,18 @@ const orderItemSchema = new mongoose.Schema({
     enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
     default: "pending",
   },
+
+  // Separate from itemStatus (fulfillment) and the order's paymentStatus
+  // (whether the CUSTOMER paid) — this tracks whether the VENDOR has
+  // been paid their share for this item. An item only becomes eligible
+  // for payout once the order is paid AND the item is delivered (see
+  // services/payoutService.js) — this field just remembers whether that
+  // eligible amount has actually been paid out yet.
+  payoutStatus: {
+    type: String,
+    enum: ["pending", "paid"],
+    default: "pending",
+  },
 });
 
 const shippingAddressSchema = new mongoose.Schema(
@@ -133,6 +145,16 @@ const orderSchema = new mongoose.Schema(
       type: String,
       enum: ["pending", "paid", "failed", "refunded"],
       default: "pending",
+    },
+
+    // Stock for this order's items is reserved (decremented) at creation
+    // time, before payment. This deadline is how long that reservation
+    // is held — if payment isn't completed by then, a background sweep
+    // (see services/orderExpiryService.js) releases the stock back and
+    // cancels the order. Not set on orders that don't reserve stock in
+    // the future (e.g. legacy documents), so code must null-check it.
+    paymentExpiresAt: {
+      type: Date,
     },
 
     // Where the order is in fulfillment. Independent of payment.

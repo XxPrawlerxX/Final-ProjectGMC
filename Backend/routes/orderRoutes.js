@@ -4,6 +4,7 @@ import {
   createOrder,
   getMyOrders,
   getMyOrderById,
+  cancelMyOrder,
   getAllOrders,
   getVendorOrders,
   updateOrderItemStatus,
@@ -40,6 +41,9 @@ router.get("/", customerOnly, getMyOrders);
 
 // CUSTOMER — view one of their own orders.
 router.get("/:id", customerOnly, getMyOrderById);
+
+// CUSTOMER — cancel one of their own orders, only while still unpaid.
+router.put("/:id/cancel", customerOnly, cancelMyOrder);
 
 // VENDOR (own items only) or ADMIN (any item) — update ONE item's
 // fulfillment status. The order's overall orderStatus is recalculated

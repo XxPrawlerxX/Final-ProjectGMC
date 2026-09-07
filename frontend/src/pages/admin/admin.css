@@ -1,0 +1,52 @@
+.admin-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-table-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.admin-table-main {
+  flex: 1;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-table-main span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.admin-rejection-note {
+  font-style: italic;
+}
+
+.admin-table-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-table-actions button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--white);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.admin-table-actions button:hover {
+  border-color: #c0392b;
+  color: #c0392b;
+}

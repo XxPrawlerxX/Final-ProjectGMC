@@ -4,6 +4,7 @@ import Order from "../models/Order.js";
 import Cart from "../models/Cart.js";
 import Product from "../models/Product.js";
 import Vendor from "../models/Vendor.js";
+import { releaseOrderStock } from "../services/orderExpiryService.js";
 
 // A small internal error type so we can throw a specific status code +
 // message from deep inside the checkout transaction below, and have the
@@ -15,6 +16,12 @@ class OrderError extends Error {
     this.statusCode = statusCode;
   }
 }
+
+// How long an order holds its stock reservation before a background
+// sweep releases it back (see services/orderExpiryService.js). Exported
+// so that service can use the exact same constant rather than a second
+// hardcoded number drifting out of sync with this one.
+export const PAYMENT_RESERVATION_MINUTES = 30;
 
 // The list of valid item/order statuses, and which transitions are
 // allowed FROM each one. This is the single source of truth for "what
@@ -190,6 +197,10 @@ export const createOrder = async (req, res) => {
     const shippingFee = 0;
     const totalAmount = subtotal + shippingFee;
 
+    const paymentExpiresAt = new Date(
+      Date.now() + PAYMENT_RESERVATION_MINUTES * 60 * 1000,
+    );
+
     const [order] = await Order.create(
       [
         {
@@ -199,6 +210,7 @@ export const createOrder = async (req, res) => {
           subtotal,
           shippingFee,
           totalAmount,
+          paymentExpiresAt,
         },
       ],
       { session },
@@ -275,6 +287,76 @@ export const getMyOrderById = async (req, res) => {
 
     res.status(500).json({
       message: "Failed to fetch order",
+    });
+  }
+};
+
+// PUT /api/orders/:id/cancel
+// Customer-only — cancels ONE OF THEIR OWN orders, but ONLY while it's
+// still unpaid. Once paymentStatus is "paid", self-cancellation isn't
+// offered here: undoing a completed payment needs a real refund, which
+// this app doesn't implement yet — silently cancelling a paid order
+// would take the customer's money with no way back. A paid order still
+// needing to be cancelled has to go through admin/support instead.
+export const cancelMyOrder = async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(400).json({
+      message: "Invalid order id",
+    });
+  }
+
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    // Same ownership pattern as getMyOrderById: scoping to { _id, user }
+    // together means a request for someone else's order simply finds
+    // nothing, never revealing whether it exists.
+    const order = await Order.findOne({
+      _id: req.params.id,
+      user: req.user._id,
+    }).session(session);
+
+    if (!order) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(404).json({
+        message: "Order not found",
+      });
+    }
+
+    if (order.orderStatus === "cancelled") {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(400).json({
+        message: "This order is already cancelled",
+      });
+    }
+
+    if (order.paymentStatus !== "pending") {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(400).json({
+        message:
+          "This order has already been paid for and can no longer be cancelled here. Please contact support.",
+      });
+    }
+
+    await releaseOrderStock(order, session);
+
+    await session.commitTransaction();
+    session.endSession();
+
+    res.json(order);
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+
+    console.error(error);
+
+    res.status(500).json({
+      message: "Failed to cancel order",
     });
   }
 };

@@ -1,0 +1,371 @@
+.orange-signin-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.04fr) minmax(420px, 0.96fr);
+  color: #111111;
+  background: #fbfaf8;
+  font-family: "DM Sans", Arial, sans-serif;
+}
+
+.orange-signin-form-panel {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 55px 8vw;
+  background: #fbfaf8;
+}
+
+.orange-signin-form-content {
+  width: min(100%, 520px);
+}
+
+.signin-wordmark {
+  margin-bottom: 70px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: #111111;
+  background: transparent;
+  text-align: left;
+}
+
+.signin-wordmark small {
+  margin-bottom: 4px;
+  color: #77716c;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.signin-wordmark strong {
+  font-family: "Manrope", Arial, sans-serif;
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -1.4px;
+  line-height: 1;
+}
+
+.signin-wordmark strong span {
+  color: #ff6a00;
+}
+
+.signin-kicker,
+.signin-story-kicker {
+  margin: 0 0 15px;
+  color: #ff6a00;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.signin-introduction h1 {
+  margin: 0;
+  color: #111111;
+  font-family: "Manrope", Arial, sans-serif;
+  font-size: clamp(35px, 4.5vw, 56px);
+  font-weight: 800;
+  letter-spacing: -3px;
+  line-height: 1.02;
+}
+
+.signin-introduction > p:last-child {
+  margin: 17px 0 38px;
+  color: #77716c;
+  font-size: 15px;
+}
+
+.orange-signin-form {
+  display: grid;
+  gap: 10px;
+}
+
+.orange-signin-form label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.orange-signin-form > input,
+.signin-password-field input {
+  width: 100%;
+  height: 54px;
+  padding: 0 18px;
+  color: #111111;
+  background: #ffffff;
+  border: 1px solid #d4cec8;
+  border-radius: 3px;
+  outline: none;
+  font-size: 14px;
+}
+
+.orange-signin-form > input:focus,
+.signin-password-field input:focus {
+  border-color: #ff6a00;
+  box-shadow: 0 0 0 4px rgba(255, 106, 0, 0.1);
+}
+
+.signin-password-field {
+  position: relative;
+}
+
+.signin-password-field input {
+  padding-right: 65px;
+}
+
+.signin-password-field button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 54px;
+  padding: 0 16px;
+  color: #77716c;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.signin-password-field button:hover {
+  color: #ff6a00;
+}
+
+.signin-forgot-link {
+  width: max-content;
+  margin: 9px 0 25px;
+  padding: 0;
+  color: #77716c;
+  background: transparent;
+  font-size: 13px;
+}
+
+.signin-forgot-link:hover {
+  color: #ff6a00;
+}
+
+.orange-signin-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.orange-signin-button,
+.orange-register-button {
+  min-width: 146px;
+  height: 50px;
+  border-radius: 3px;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.orange-signin-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 21px;
+  color: #ffffff;
+  background: #ff6a00;
+  box-shadow: 0 9px 20px rgba(255, 106, 0, 0.2);
+}
+
+.orange-signin-button:hover {
+  background: #db4f00;
+  transform: translateY(-1px);
+}
+
+.orange-signin-button span {
+  font-size: 19px;
+}
+
+.orange-register-button {
+  color: #111111;
+  background: transparent;
+  border: 1px solid #aaa29b;
+}
+
+.orange-register-button:hover {
+  color: #ff6a00;
+  border-color: #ff6a00;
+}
+
+.signin-form-message {
+  margin: 17px 0 0;
+  color: #db4f00;
+  font-size: 12px;
+}
+
+.return-home-button {
+  margin-top: 35px;
+  padding: 0;
+  color: #77716c;
+  background: transparent;
+  font-size: 13px;
+}
+
+.return-home-button:hover {
+  color: #ff6a00;
+}
+
+.orange-signin-story-panel {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: #d95616;
+}
+
+.signin-story-image {
+  position: absolute;
+  inset: 0;
+  background-image: url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=90");
+  background-position: center;
+  background-size: cover;
+  filter: saturate(0.86) contrast(1.02);
+}
+
+.signin-story-wash {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(255, 106, 0, 0.78), rgba(92, 35, 10, 0.17) 55%, rgba(17, 17, 17, 0.63)),
+    linear-gradient(0deg, rgba(17, 17, 17, 0.56), transparent 62%);
+  mix-blend-mode: multiply;
+}
+
+.signin-story-content {
+  position: absolute;
+  right: 10%;
+  bottom: 16%;
+  left: 11%;
+  color: #ffffff;
+}
+
+.signin-story-kicker {
+  color: #ffe4d1;
+}
+
+.signin-story-content h2 {
+  max-width: 500px;
+  margin: 0 0 15px;
+  font-family: "Manrope", Arial, sans-serif;
+  font-size: clamp(34px, 4vw, 58px);
+  font-weight: 800;
+  letter-spacing: -3px;
+  line-height: 1.02;
+}
+
+.signin-story-content > p:last-child {
+  max-width: 420px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.signin-story-dots {
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  display: flex;
+  gap: 7px;
+  transform: translateX(-50%);
+}
+
+.signin-story-dots * {
+  display: block;
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.58);
+  border-radius: 50%;
+}
+
+.signin-story-dots b {
+  width: 28px;
+  background: #ffffff;
+  border-radius: 10px;
+}
+
+@media (max-width: 820px) {
+  .orange-signin-page {
+    display: block;
+  }
+
+  .orange-signin-form-panel {
+    min-height: 0;
+    padding: 42px 24px 55px;
+  }
+
+  .signin-wordmark {
+    margin-bottom: 55px;
+  }
+
+  .orange-signin-story-panel {
+    min-height: 390px;
+  }
+
+  .signin-story-content {
+    right: 8%;
+    bottom: 21%;
+    left: 8%;
+  }
+}
+
+@media (max-width: 460px) {
+  .orange-signin-form-panel {
+    padding-right: 19px;
+    padding-left: 19px;
+  }
+
+  .signin-introduction h1 {
+    font-size: 38px;
+    letter-spacing: -2px;
+  }
+
+  .orange-signin-actions {
+    gap: 10px;
+  }
+
+  .orange-signin-button,
+  .orange-register-button {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .orange-signin-story-panel {
+    min-height: 330px;
+  }
+
+  .signin-story-content h2 {
+    font-size: 34px;
+    letter-spacing: -2px;
+  }
+}
+
+/* Dev-only stand-in for real email delivery on the forgot-password
+   screen — see the comment in authController.js. Never appears in a
+   production build (the backend gates it off), so this is deliberately
+   styled to look distinct/temporary rather than blending in. */
+.dev-reset-token-box {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border: 1px dashed var(--orange, #ff6a00);
+  border-radius: 10px;
+  background: var(--orange-soft, #fff0e6);
+}
+
+.dev-reset-token-box p {
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+}
+
+.dev-reset-token-box button {
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background: var(--orange, #ff6a00);
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+}

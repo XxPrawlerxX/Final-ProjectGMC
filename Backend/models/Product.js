@@ -67,6 +67,24 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+
+    // Denormalized from the Review collection (see
+    // controllers/reviewController.js) so every product listing page
+    // can show a real rating without an extra query per product. Never
+    // set directly — always recalculated from the actual reviews
+    // whenever one is created, edited, or deleted.
+    averageRating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+    },
+
+    numReviews: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
   },
   {
     timestamps: true,

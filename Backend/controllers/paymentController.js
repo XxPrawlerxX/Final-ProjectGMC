@@ -7,6 +7,7 @@ import {
   initializeTransaction,
   verifyTransaction,
 } from "../services/paystackService.js";
+import { expireOrder } from "../services/orderExpiryService.js";
 
 // Generates a unique reference for ONE payment attempt. We tie it to the
 // order's own reference for easy tracing in the Paystack dashboard, plus
@@ -52,6 +53,25 @@ export const initializePayment = async (req, res) => {
       });
     }
 
+    // The order's stock reservation has a deadline (see
+    // PAYMENT_RESERVATION_MINUTES in orderController.js). If it's
+    // passed but the background sweep hasn't gotten to it yet, release
+    // it right now rather than making the customer wait for that sweep
+    // — and rather than letting them pay for stock that's about to be
+    // (or already was) given back to other customers.
+    if (
+      order.paymentStatus === "pending" &&
+      order.orderStatus !== "cancelled" &&
+      order.paymentExpiresAt &&
+      order.paymentExpiresAt < new Date()
+    ) {
+      await expireOrder(order._id);
+
+      return res.status(400).json({
+        message: "This order has expired because payment wasn't completed in time.",
+      });
+    }
+
     if (order.paymentStatus === "paid") {
       return res.status(400).json({
         message: "This order has already been paid for",
@@ -86,10 +106,24 @@ export const initializePayment = async (req, res) => {
       },
     });
 
+    // Where Paystack sends the customer's browser back to after checkout.
+    // Without this, Paystack falls back to whatever (if anything) is
+    // configured in the dashboard, which breaks local development. The
+    // frontend route itself reads ?reference= from the URL and calls
+    // verifyPayment below — Paystack redirecting here is NOT treated as
+    // proof of payment by itself.
+    // FRONTEND_URL may list multiple comma-separated origins (see the CORS
+    // setup in server.js) — Paystack only needs one to redirect back to.
+    const frontendUrl = (process.env.FRONTEND_URL || "http://localhost:5180")
+      .split(",")[0]
+      .trim();
+    const callbackUrl = `${frontendUrl}/payment/callback`;
+
     const paystackResponse = await initializeTransaction({
       email: req.user.email,
       amount: amountInKobo,
       reference,
+      callback_url: callbackUrl,
       metadata: {
         orderId: order._id.toString(),
         orderNumber: order.orderNumber,

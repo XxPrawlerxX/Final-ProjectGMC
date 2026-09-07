@@ -36,11 +36,12 @@ export const initializeTransaction = async ({
   email,
   amount,
   reference,
+  callback_url,
   metadata,
 }) => {
   return paystackRequest("/transaction/initialize", {
     method: "POST",
-    body: JSON.stringify({ email, amount, reference, metadata }),
+    body: JSON.stringify({ email, amount, reference, callback_url, metadata }),
   });
 };
 
