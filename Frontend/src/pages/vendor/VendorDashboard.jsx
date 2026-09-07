@@ -4,6 +4,7 @@ import { getMyVendorProfile } from "../../api/vendorApi";
 import VendorProducts from "./VendorProducts";
 import VendorOrders from "./VendorOrders";
 import VendorEarnings from "./VendorEarnings";
+import VendorSettings from "./VendorSettings";
 import "./vendor.css";
 
 // No vendor UI existed at all before this. Built with the same
@@ -123,12 +124,19 @@ export default function VendorDashboard() {
           >
             Earnings
           </button>
+          <button
+            className={tab === "settings" ? "active" : ""}
+            onClick={() => setTab("settings")}
+          >
+            Store Settings
+          </button>
         </div>
       </div>
 
       {tab === "products" && <VendorProducts />}
       {tab === "orders" && <VendorOrders />}
       {tab === "earnings" && <VendorEarnings />}
+      {tab === "settings" && <VendorSettings vendor={vendor} onUpdated={setVendor} />}
     </div>
   );
 }

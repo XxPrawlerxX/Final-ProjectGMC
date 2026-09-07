@@ -5,6 +5,11 @@ export function getMyVendorProfile() {
   return apiRequest("/vendors/me");
 }
 
+// PUT /api/vendors/me — update the logged-in vendor's own store profile.
+export function updateMyVendorProfile(payload) {
+  return apiRequest("/vendors/me", { method: "PUT", body: payload });
+}
+
 // GET /api/vendors/applications — admin-only, every vendor application.
 export function getVendorApplications() {
   return apiRequest("/vendors/applications");

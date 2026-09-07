@@ -31,6 +31,48 @@ export const getMyVendorProfile = async (req, res) => {
   }
 };
 
+// UPDATE MY VENDOR PROFILE
+// Body: { storeName, storeDescription, phone, address }
+// Only the store details are editable here — status/rejectionReason
+// stay admin-controlled (see approveVendor/rejectVendor below).
+export const updateMyVendorProfile = async (req, res) => {
+  try {
+    const { storeName, storeDescription, phone, address } = req.body;
+
+    if (!storeName || !phone || !address) {
+      return res.status(400).json({
+        message: "Store name, phone and address are required",
+      });
+    }
+
+    const vendor = await Vendor.findOne({ user: req.user._id });
+
+    if (!vendor) {
+      return res.status(404).json({
+        message: "Vendor profile not found",
+      });
+    }
+
+    vendor.storeName = storeName;
+    vendor.storeDescription = storeDescription || "";
+    vendor.phone = phone;
+    vendor.address = address;
+
+    await vendor.save();
+
+    res.json({
+      message: "Store profile updated successfully",
+      vendor,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Failed to update store profile",
+    });
+  }
+};
+
 // GET ALL VENDOR APPLICATIONS
 export const getVendorApplications = async (req, res) => {
   try {
