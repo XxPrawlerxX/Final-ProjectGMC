@@ -1,5 +1,6 @@
 import { ChevronLeft, Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import { formatNaira } from "./categoryData";
+import "./cart.css";
 
 export default function Cart({
   cart,
