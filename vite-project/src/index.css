@@ -1454,6 +1454,7 @@ input:focus-visible {
   color: #ff9a68;
   font-size: 11px;
   font-weight: 800;
+  background: transparent;
 }
 
 .footer-main {
@@ -1509,6 +1510,7 @@ input:focus-visible {
   color: #e36103;
   font-size: 12px;
   text-align: left;
+  background-color: #17130f;
 }
 
 .footer-link-column button:hover {

@@ -1187,9 +1187,9 @@ export default function Home({
 
             <p>4 alhaji Ganiyu, Lekki, Lagos, Nigeria</p>
 
-            <p>Phone: +23416313124</p>
+            <p>Phone: +2340000000000</p>
 
-            <p>WhatsApp: +2347057095939</p>
+            <p>WhatsApp: +234000000000</p>
           </div>
 
           <div>
