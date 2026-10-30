@@ -18,4 +18,9 @@ export default defineConfig([
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
   },
+  {
+    // The payment server runs in Node, not the browser
+    files: ['server/**/*.js'],
+    languageOptions: { globals: globals.node },
+  },
 ])
