@@ -8,11 +8,22 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "node --env-file=.env server/index.js"
+    "server": "node --env-file=.env server/index.js",
+    "seed": "node --env-file=.env server/seed.js",
+    "make-admin": "node --env-file=.env server/make-admin.js",
+    "test:server": "node --test \"shared/*.test.js\" \"server/**/*.test.js\""
   },
   "dependencies": {
     "@paystack/inline-js": "^2.22.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
     "lucide-react": "^1.33.0",
+    "mongoose": "^8.9.0",
+    "multer": "^2.0.0",
+    "nodemailer": "^6.9.16",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-icons": "^5.7.0",
@@ -28,5 +39,8 @@
     "eslint-plugin-react-refresh": "^0.5.3",
     "globals": "^17.7.0",
     "vite": "^8.2.0"
+  },
+  "engines": {
+    "node": ">=20.6"
   }
 }

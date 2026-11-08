@@ -1,75 +1,34 @@
-import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { SearchX } from "lucide-react";
-import { searchProducts } from "./catalog";
-import { useCart } from "./useCart";
-import ShopHeader from "./ShopHeader";
-import ProductCard from "./ProductCard";
-import "./category.css";
-import "./shop.css";
+import Layout from "./Layout";
+import ProductListing from "./ProductListing";
+import "./listing.css";
 
 export default function SearchPage() {
   const [params] = useSearchParams();
   const query = (params.get("q") || "").trim();
-  const { addToCart } = useCart();
-  const [notice, setNotice] = useState("");
-
-  const results = searchProducts(query);
-
-  function handleAdd(product) {
-    addToCart(product);
-    setNotice(`${product.name} added to cart`);
-    window.setTimeout(() => setNotice(""), 2200);
-  }
 
   return (
-    <div className="shop-page">
-      <ShopHeader />
-
-      <main className="shop-main">
-        <div className="search-heading">
-          <p className="shop-kicker">SEARCH</p>
-          <h1>{query ? `Results for “${query}”` : "Search Marketfind"}</h1>
-          {query && (
-            <span>
-              {results.length} {results.length === 1 ? "product" : "products"}{" "}
-              found
-            </span>
-          )}
+    <Layout>
+      <div className="site-container">
+        <div className="page-head">
+          <p className="page-kicker">Search</p>
+          <h1 className="page-title">{query ? `Results for “${query}”` : "Search Marketfind"}</h1>
         </div>
 
-        {results.length > 0 ? (
-          <div className="product-grid">
-            {results.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAdd={handleAdd}
-              />
-            ))}
-          </div>
+        {query ? (
+          <ProductListing
+            key={query}
+            baseParams={{ q: query }}
+            emptyTitle="No products found"
+            emptyText="Try a different spelling or a more general word."
+          />
         ) : (
-          <div className="shop-empty">
-            <SearchX size={54} />
-            <h1>{query ? "No products found" : "What are you looking for?"}</h1>
-            <p>
-              {query
-                ? "Try a different spelling or a more general word."
-                : "Type a product name in the search box above."}
-            </p>
-            <Link className="shop-primary-link" to="/">
-              Browse the marketplace
-            </Link>
+          <div className="listing-message">
+            <h2>What are you looking for?</h2>
+            <p>Type a product name in the search box above, or <Link to="/" style={{ textDecoration: "underline" }}>browse the store</Link>.</p>
           </div>
         )}
-      </main>
-
-      {notice && (
-        <div className="shop-toast" role="status">
-          {notice}
-          <Link to="/cart">View cart</Link>
-        </div>
-      )}
-    </div>
+      </div>
+    </Layout>
   );
 }

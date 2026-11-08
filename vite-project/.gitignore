@@ -23,5 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-# Secrets
+# Secrets - never commit these
 .env
+.env.*
+!.env.example

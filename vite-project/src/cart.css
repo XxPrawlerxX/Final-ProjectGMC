@@ -615,3 +615,33 @@
 .cart-item-link:hover {
   color: var(--cart-orange);
 }
+
+/* Bulk lines */
+.cart-item-info strong small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.cart-bulk-note {
+  margin: 2px 0 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.quantity-box {
+  width: 74px;
+  height: 100%;
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  text-align: center;
+  font-weight: 700;
+  -moz-appearance: textfield;
+}
+
+.quantity-box::-webkit-outer-spin-button,
+.quantity-box::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

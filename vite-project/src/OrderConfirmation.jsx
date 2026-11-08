@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { CheckCircle2 } from "lucide-react";
-import { formatNaira } from "./categoryData";
-import ShopHeader from "./ShopHeader";
+import { formatNaira } from "./lib/format";
+import Layout from "./Layout";
 import NotFound from "./NotFound";
 import "./shop.css";
 
@@ -30,9 +30,8 @@ export default function OrderConfirmation() {
   const { customer } = order;
 
   return (
-    <div className="shop-page">
-      <ShopHeader />
-      <main className="shop-main">
+    <Layout>
+      <div className="site-container">
         <div className="order-card">
           <div className="order-card-header">
             <CheckCircle2 size={56} />
@@ -76,7 +75,7 @@ export default function OrderConfirmation() {
             Continue shopping
           </Link>
         </div>
-      </main>
-    </div>
+      </div>
+    </Layout>
   );
 }

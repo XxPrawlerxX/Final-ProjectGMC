@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { unitPriceFor } from "./lib/pricing";
 import { CartContext } from "./cartContext";
 
 const STORAGE_KEY = "marketfind-cart";
@@ -21,6 +22,21 @@ function loadCart() {
   }
 }
 
+// What a cart line remembers about a product (bulk items also need their minimum
+// order and price breaks so the price can change with the quantity)
+const snapshot = (product) => ({
+  id: product.id,
+  name: product.name,
+  price: product.price,
+  oldPrice: product.oldPrice,
+  image: product.image,
+  stock: product.stock,
+  listingType: product.listingType || "retail",
+  unit: product.unit || "piece",
+  minOrderQty: product.minOrderQty || 1,
+  priceTiers: product.priceTiers || [],
+});
+
 export default function CartProvider({ children }) {
   const [cart, setCart] = useState(loadCart);
 
@@ -35,25 +51,17 @@ export default function CartProvider({ children }) {
 
   const addToCart = useCallback((product, quantity = 1) => {
     setCart((current) => {
+      const min = product.minOrderQty || 1;
+      const limit = product.stock > 0 ? product.stock : 99;
       const existing = current.find((item) => item.id === product.id);
       if (existing) {
         return current.map((item) =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + quantity }
+            ? { ...item, ...snapshot(product), quantity: Math.min(Math.max(item.quantity + quantity, min), limit) }
             : item,
         );
       }
-      return [
-        ...current,
-        {
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          oldPrice: product.oldPrice,
-          image: product.image,
-          quantity,
-        },
-      ];
+      return [...current, { ...snapshot(product), quantity: Math.min(Math.max(quantity, min), limit) }];
     });
   }, []);
 
@@ -68,13 +76,19 @@ export default function CartProvider({ children }) {
         return;
       }
       setCart((current) =>
-        current.map((item) => (item.id === id ? { ...item, quantity } : item)),
+        current.map((item) => {
+          if (item.id !== id) return item;
+          const limit = item.stock > 0 ? item.stock : Infinity;
+          return { ...item, quantity: Math.min(Math.max(quantity, item.minOrderQty || 1), limit) };
+        }),
       );
     },
     [removeFromCart],
   );
 
   const clearCart = useCallback(() => setCart([]), []);
+  // Used by the cart page after checking prices/stock against the server
+  const replaceCart = useCallback((items) => setCart(items), []);
 
   const value = useMemo(
     () => ({
@@ -83,13 +97,12 @@ export default function CartProvider({ children }) {
       removeFromCart,
       updateQuantity,
       clearCart,
-      cartCount: cart.reduce((total, item) => total + item.quantity, 0),
-      subtotal: cart.reduce(
-        (total, item) => total + item.price * item.quantity,
-        0,
-      ),
+      replaceCart,
+      cartCount: cart.length,
+      // bulk price breaks are applied per line, based on its quantity
+      subtotal: cart.reduce((total, item) => total + unitPriceFor(item, item.quantity) * item.quantity, 0),
     }),
-    [cart, addToCart, removeFromCart, updateQuantity, clearCart],
+    [cart, addToCart, removeFromCart, updateQuantity, clearCart, replaceCart],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

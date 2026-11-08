@@ -300,8 +300,9 @@
     margin-bottom: 55px;
   }
 
+  /* The decorative panel only adds scrolling on small screens */
   .orange-signin-story-panel {
-    min-height: 390px;
+    display: none;
   }
 
   .signin-story-content {
@@ -340,4 +341,54 @@
     font-size: 34px;
     letter-spacing: -2px;
   }
+}
+/* ---------- Added for real authentication ---------- */
+
+.auth-logo {
+  display: inline-block;
+  margin-bottom: 34px;
+  line-height: 0;
+}
+
+.auth-logo img {
+  height: 64px;
+  width: auto;
+}
+
+.auth-field-error,
+.signin-form-message.error {
+  color: #c62828;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.auth-field-hint {
+  color: #667078;
+  font-size: 13px;
+}
+
+.orange-signin-form .auth-field-error,
+.orange-signin-form .auth-field-hint {
+  display: block;
+  margin: -6px 0 14px;
+}
+
+.orange-signin-form input[aria-invalid="true"] {
+  border-color: #c62828;
+}
+
+.orange-register-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.orange-signin-button:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.return-home-button {
+  display: inline-block;
 }

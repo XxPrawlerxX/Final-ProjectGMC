@@ -2,19 +2,15 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PaystackPop from "@paystack/inline-js";
 import { ChevronLeft, Lock, ShoppingCart } from "lucide-react";
-import { formatNaira } from "./categoryData";
-import { DELIVERY_FEE } from "./catalog";
-import { initializePayment, verifyPayment } from "./api";
+import { formatNaira } from "./lib/format";
+import { unitPriceFor } from "./lib/pricing";
+import { initializePayment, verifyPayment } from "./lib/payments";
+import { useApi } from "./useApi";
+import { useAuth } from "./auth/authContext";
 import { useCart } from "./useCart";
+import Layout from "./Layout";
+import { NIGERIAN_STATES } from "./lib/nigeria";
 import "./checkout.css";
-
-const NIGERIAN_STATES = [
-  "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue",
-  "Borno", "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu",
-  "FCT (Abuja)", "Gombe", "Imo", "Jigawa", "Kaduna", "Kano", "Katsina",
-  "Kebbi", "Kogi", "Kwara", "Lagos", "Nasarawa", "Niger", "Ogun", "Ondo",
-  "Osun", "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara",
-];
 
 const EMPTY_FORM = {
   fullName: "",
@@ -23,6 +19,7 @@ const EMPTY_FORM = {
   address: "",
   city: "",
   state: "",
+  businessName: "",
 };
 
 function validate(form) {
@@ -40,11 +37,25 @@ function validate(form) {
   return errors;
 }
 
-export default function Checkout() {
+function CheckoutContent({ user }) {
   const navigate = useNavigate();
   const { cart, subtotal, clearCart } = useCart();
+  const { data: config } = useApi("/api/config");
+  const deliveryFee = config?.deliveryFee ?? 0;
 
-  const [form, setForm] = useState(EMPTY_FORM);
+  // Signed-in shoppers get their saved details pre-filled
+  const [form, setForm] = useState(() => ({
+    ...EMPTY_FORM,
+    ...(user && {
+      fullName: user.name,
+      email: user.email,
+      phone: user.phone,
+      address: user.address,
+      city: user.city,
+      state: user.state,
+      businessName: user.buyer?.kind === "business" ? user.buyer.businessName : "",
+    }),
+  }));
   const [errors, setErrors] = useState({});
   // idle | starting | paying | verifying
   const [status, setStatus] = useState("idle");
@@ -52,8 +63,8 @@ export default function Checkout() {
   // Set when the customer paid but we couldn't confirm it yet
   const [unconfirmedRef, setUnconfirmedRef] = useState("");
 
-  const total = subtotal + DELIVERY_FEE;
-  const busy = status !== "idle";
+  const total = subtotal + deliveryFee;
+  const busy = status !== "idle" || !config;
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -203,6 +214,12 @@ export default function Checkout() {
               placeholder: "e.g. Adaeze Okafor",
               autoComplete: "name",
             })}
+            {user?.buyer?.kind === "business" &&
+              field("businessName", "Business name (for the invoice)", {
+                type: "text",
+                placeholder: "Your company's name",
+                autoComplete: "organization",
+              })}
             <div className="form-row">
               {field("email", "Email address", {
                 type: "email",
@@ -302,7 +319,7 @@ export default function Checkout() {
                 <b>{item.quantity}</b>
               </div>
               <strong className="checkout-item-name">{item.name}</strong>
-              <strong>{formatNaira(item.price * item.quantity)}</strong>
+              <strong>{formatNaira(unitPriceFor(item, item.quantity) * item.quantity)}</strong>
             </div>
           ))}
 
@@ -315,7 +332,7 @@ export default function Checkout() {
 
           <div className="summary-row">
             <span>Delivery</span>
-            <strong>{formatNaira(DELIVERY_FEE)}</strong>
+            <strong>{formatNaira(deliveryFee)}</strong>
           </div>
 
           <hr />
@@ -327,5 +344,14 @@ export default function Checkout() {
         </aside>
       </div>
     </div>
+  );
+}
+
+export default function Checkout() {
+  const { user, ready } = useAuth();
+  return (
+    <Layout>
+      {ready ? <CheckoutContent user={user} /> : <div className="page-loading" role="status">Loading…</div>}
+    </Layout>
   );
 }
